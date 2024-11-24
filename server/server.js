@@ -22,16 +22,18 @@ const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
     origin: process.env.CLIENT_URL || "http://localhost:3000",
-    methods: ["GET", "POST"],
-    credentials: true
+    methods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"]
   }
 });
 
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
 
@@ -68,6 +70,9 @@ mongoose.connection.on('disconnected', () => {
 app.use('/api/users', userRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Add before your routes
+app.options('*', cors()); // Enable preflight for all routes
 
 // Socket.IO connection handling
 const onlineUsers = new Map();
