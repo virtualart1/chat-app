@@ -1,11 +1,21 @@
 services:
+
   - type: web
+
     name: chat-app-client
+
     env: static
+
     buildCommand: npm install && npm run build
+
     staticPublishPath: ./build
-    envVars:
-      - key: REACT_APP_API_URL
-        sync: false
-      - key: REACT_APP_SOCKET_URL
-        sync: false 
+
+    headers:
+
+      - source: /*
+
+        headers:
+
+          - key: Cache-Control
+
+            value: no-cache 
