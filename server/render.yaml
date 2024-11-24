@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: chat-app-server
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_SECRET_KEY
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+    healthCheckPath: /api/health 

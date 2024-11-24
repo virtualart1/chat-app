@@ -18,17 +18,24 @@ if (missingEnvVars.length > 0) {
 }
 
 const app = express();
+const server = http.createServer(app);
 
-// Enable trust proxy for Vercel
-app.enable('trust proxy');
-
-// CORS configuration
+// CORS configuration for Render
 app.use(cors({
   origin: process.env.CLIENT_URL || "http://localhost:3000",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   credentials: true,
   allowedHeaders: ["X-Requested-With", "Content-Type", "Accept", "Authorization"]
 }));
+
+// Socket.IO setup for Render
+const io = socketIO(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 app.use(express.json());
 
@@ -79,3 +86,9 @@ app.use((err, req, res, next) => {
 
 // Export the Express API
 module.exports = app; 
+
+// Start server
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+}); 
