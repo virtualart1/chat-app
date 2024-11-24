@@ -47,7 +47,7 @@ function AdminDashboard() {
 
   // Add socket connection
   useEffect(() => {
-    const newSocket = io('http://localhost:5000');
+    const newSocket = io(process.env.REACT_APP_SOCKET_URL);
     setSocket(newSocket);
 
     return () => newSocket.close();
@@ -64,10 +64,10 @@ function AdminDashboard() {
         }
 
         const [usersRes, messagesRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/users', {
+          axios.get(`${process.env.REACT_APP_API_URL}/api/admin/users`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://localhost:5000/api/chats/group', {
+          axios.get(`${process.env.REACT_APP_API_URL}/api/chats/group`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
@@ -112,8 +112,8 @@ function AdminDashboard() {
       }
 
       const endpoint = action === 'delete' 
-        ? `http://localhost:5000/api/admin/users/${userId}`
-        : `http://localhost:5000/api/admin/users/${userId}/${action}`;
+        ? `${process.env.REACT_APP_API_URL}/api/admin/users/${userId}`
+        : `${process.env.REACT_APP_API_URL}/api/admin/users/${userId}/${action}`;
       
       const method = action === 'delete' ? 'delete' : 'put';
       
@@ -164,7 +164,7 @@ function AdminDashboard() {
   const handleDeleteMessage = async (messageId) => {
     try {
       const token = localStorage.getItem('adminToken');
-      await axios.delete(`http://localhost:5000/api/admin/messages/${messageId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/admin/messages/${messageId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -191,7 +191,7 @@ function AdminDashboard() {
   const handleClearGroupChat = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      await axios.delete('http://localhost:5000/api/admin/messages/group/clear', {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/admin/messages/group/clear`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

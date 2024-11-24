@@ -103,7 +103,7 @@ function Chat() {
       
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/chats/${user._id}/${selectedUser._id}`,
+          `${process.env.REACT_APP_API_URL}/api/chats/${user._id}/${selectedUser._id}`,
           {
             headers: { Authorization: `Bearer ${user.token}` }
           }
@@ -133,7 +133,7 @@ function Chat() {
         return;
       }
 
-      newSocket = io('http://localhost:5000', {
+      newSocket = io(process.env.REACT_APP_SOCKET_URL, {
         transports: ['websocket'],
         auth: {
           token: user.token
@@ -174,7 +174,7 @@ function Chat() {
         if (!user) return;
 
         // Fetch users
-        const { data: usersData } = await axios.get('http://localhost:5000/api/users', {
+        const { data: usersData } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
           headers: {
             Authorization: `Bearer ${user.token}`
           }
@@ -186,7 +186,7 @@ function Chat() {
         await Promise.all(otherUsers.map(async (otherUser) => {
           try {
             const { data: messages } = await axios.get(
-              `http://localhost:5000/api/chats/${user._id}/${otherUser._id}`,
+              `${process.env.REACT_APP_API_URL}/api/chats/${user._id}/${otherUser._id}`,
               {
                 headers: { Authorization: `Bearer ${user.token}` }
               }
@@ -238,7 +238,7 @@ function Chat() {
       
       try {
         const { data } = await axios.get(
-          'http://localhost:5000/api/chats/group',
+          `${process.env.REACT_APP_API_URL}/api/chats/group`,
           {
             headers: { Authorization: `Bearer ${user.token}` }
           }
@@ -393,7 +393,7 @@ function Chat() {
       console.log('Sending message:', messageToSend); // Debug log
 
       const response = await axios.post(
-        'http://localhost:5000/api/chats',
+        `${process.env.REACT_APP_API_URL}/api/chats`,
         messageToSend,
         {
           headers: { 
