@@ -355,7 +355,7 @@ function ChatBox({
         bg="darkTheme.200"
         h="72px"
       >
-        <Flex direction="column" h="100%" justify="center">
+        <Flex direction="column" height="100%" justify="center">
           <Flex align="center" gap={0}>
             {selectedUser && (
               <IconButton
@@ -427,7 +427,7 @@ function ChatBox({
         </Flex>
       </Box>
       
-      <Box 
+      <Box
         flex="1"
         overflow="auto"
         p={4}
