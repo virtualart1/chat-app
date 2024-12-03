@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Grid,
   GridItem,
@@ -8,11 +8,9 @@ import {
   Flex,
   Button,
   Spinner,
-  IconButton,
   useBreakpointValue,
   Avatar,
 } from '@chakra-ui/react';
-import { HamburgerIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import axios from 'axios';
@@ -84,6 +82,9 @@ function Chat() {
   const [groupMessages, setGroupMessages] = useState([]);
   const { primaryColor, handleColorChange } = useCustomTheme();
   const [lastMessageTimestamps, setLastMessageTimestamps] = useState({});
+  const chatAreaRef = useRef(null);
+  const touchStartXRef = useRef(0);
+  const touchEndXRef = useRef(0);
 
   // Wrap handleLogout in useCallback
   const handleLogout = useCallback(() => {
@@ -470,6 +471,23 @@ function Chat() {
     }
   };
 
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndXRef.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = () => {
+    const distance = touchStartXRef.current - touchEndXRef.current;
+    const minSwipeDistance = 50; // Minimum swipe distance in px
+    
+    if (distance < -minSwipeDistance) { // Swipe Right
+      setShowSidebar(true);
+    }
+  };
+
   if (loading) {
     return (
       <Flex height="100vh" align="center" justify="center">
@@ -509,33 +527,35 @@ function Chat() {
           transform: 'translateY(-1px)',
         }}
       >
-        {/* User Info */}
-        <Flex align="center" gap={2}>
-          <Avatar 
-            size="xs" 
-            name={user.fullName}
-            bg="darkTheme.200"
-            color="white"
-          />
-          <Box>
-            <Text 
-              fontSize="xs" 
-              fontWeight="medium" 
-              color="darkTheme.500"
-              lineHeight="tight"
-            >
-              {user.fullName}
-            </Text>
-            <Text 
-              fontSize="10px" 
-              color="darkTheme.600"
-              lineHeight="tight"
-            >
-              @{user.username}
-            </Text>
-          </Box>
-        </Flex>
-
+        {/* Conditionally render User Info only in Group Chat */}
+        {!selectedUser && (
+          <Flex align="center" gap={2}>
+            <Avatar 
+              size="xs" 
+              name={user.fullName}
+              bg="darkTheme.200"
+              color="white"
+            />
+            <Box>
+              <Text 
+                fontSize="xs" 
+                fontWeight="medium" 
+                color="darkTheme.500"
+                lineHeight="tight"
+              >
+                {user.fullName}
+              </Text>
+              <Text 
+                fontSize="10px" 
+                color="darkTheme.600"
+                lineHeight="tight"
+              >
+                @{user.username}
+              </Text>
+            </Box>
+          </Flex>
+        )}
+        
         {/* Theme Changer */}
         <ColorPicker 
           onColorChange={handleColorChange}
@@ -575,7 +595,7 @@ function Chat() {
             p={4} 
             borderBottom="1px" 
             borderColor="darkTheme.300"
-            bg="darkTheme.300"
+            bg="darkTheme.100"
             boxShadow="0 1px 2px rgba(0, 0, 0, 0.1)"
           >
             <Flex justify="space-between" align="center">
@@ -666,26 +686,19 @@ function Chat() {
           </Box>
         </GridItem>
 
-        {/* Main Chat Area - Add onClick handler */}
+        {/* Main Chat Area - Add swipe handlers */}
         <GridItem 
           position="relative"
           ml={{ base: 0, md: showSidebar ? 0 : "0" }}
           transition="margin-left 0.3s ease"
           onClick={handleChatAreaClick}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          ref={chatAreaRef} // Add a ref for swipe detection
         >
-          {/* Toggle Sidebar Button */}
-          {!showSidebar && !selectedUser && (
-            <IconButton
-              icon={<HamburgerIcon />}
-              position="absolute"
-              left={4}
-              top={4}
-              zIndex="1"
-              size="md"
-              onClick={() => setShowSidebar(true)}
-              aria-label="Show Sidebar"
-            />
-          )}
+          {/* Remove Toggle Sidebar Button */}
+          {/* Swipe functionality replaces the hamburger button */}
           
           {selectedUser ? (
             <Box>

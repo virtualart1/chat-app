@@ -14,7 +14,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { 
-  HamburgerIcon, 
   CloseIcon,
   ArrowBackIcon
 } from '@chakra-ui/icons';
@@ -27,7 +26,6 @@ function ChatBox({
   messages, 
   onSendMessage, 
   onBack,
-  showSidebarButton,
   onToggleSidebar,
   isMobile,
   isGroupChat,
@@ -358,18 +356,7 @@ function ChatBox({
         h="72px"
       >
         <Flex direction="column" h="100%" justify="center">
-          <Flex align="center" gap={2}>
-            {showSidebarButton && (
-              <IconButton
-                icon={<HamburgerIcon />}
-                onClick={onToggleSidebar}
-                size="sm"
-                aria-label="Show Sidebar"
-                mr={2}
-                variant="ghost"
-                _hover={{ bg: 'darkTheme.300' }}
-              />
-            )}
+          <Flex align="center" gap={0}>
             {selectedUser && (
               <IconButton
                 icon={<ArrowBackIcon />}
@@ -380,7 +367,7 @@ function ChatBox({
                 _hover={{ bg: 'darkTheme.300' }}
                 title="Back to Group Chat"
                 visibility="visible"
-                mr={2}
+                mr={1}
               />
             )}
 

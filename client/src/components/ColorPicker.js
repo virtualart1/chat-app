@@ -37,7 +37,7 @@ function ColorPicker({ onColorChange, currentColor }) {
         icon={<SettingsIcon />}
         variant="ghost"
         size="sm"
-        _hover={{ bg: 'darkTheme.300' }}
+        _hover={{ bg: 'darkTheme.200' }}
       />
       <MenuList bg="darkTheme.200" borderColor="darkTheme.300">
         <Box p={2} display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={2}>
